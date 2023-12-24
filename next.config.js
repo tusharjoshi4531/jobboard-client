@@ -7,11 +7,11 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.NEXT_PUBLIC_MASTER_URL,
+            value: "*",
           },
           {
             key: "Access-Control-Allow-Methods",
-            value: "POST",
+            value: "POST,GET,DELETE,PUT,PATCH,OPTIONS",
           },
           {
             key: "Access-Control-Allow-Headers",
