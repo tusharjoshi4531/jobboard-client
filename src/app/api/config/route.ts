@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
+import path from "path";
 
 export async function POST(req: NextRequest) {
   const newConfig = await req.json();
   console.log(newConfig);
 
   try {
-    await fs.writeFile(
-      process.cwd() + "/src/config/config.json",
-      JSON.stringify(newConfig)
-    );
+    const filePath = path.join(process.cwd(), "/src/config/config.json");
+    await fs.writeFile(filePath, JSON.stringify(newConfig));
 
     return NextResponse.json({
       status: 200,
@@ -24,9 +23,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const config = JSON.parse(
-    await fs.readFile(process.cwd() + "/src/config/config.json", "utf-8")
-  );
+  const filePath = path.join(process.cwd(), "/src/config/config.json");
+  const config = JSON.parse(await fs.readFile(filePath, "utf-8"));
 
   return NextResponse.json({
     status: 200,
