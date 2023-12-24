@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const supabase = await createSupabaseServerClient();
     const resp = await supabase
       .from("config")
-      .update({ config: newConfig })
+      .upsert({link: process.env.NEXT_PUBLIC_URL_ORIGIN, config: newConfig })
       .eq("link", process.env.NEXT_PUBLIC_URL_ORIGIN);
 
     console.log(resp);
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   // const filePath = path.join(process.cwd(), "/src/config/config.json");
-  const supabase = await createSupabaseServerClient({
+  const supabase = await createSupabaseServerClient({  
     auth: {
       persistSession: false,
     },
