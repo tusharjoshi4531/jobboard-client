@@ -22,3 +22,15 @@ export async function POST(req: NextRequest) {
     });
   }
 }
+
+export async function GET(req: NextRequest) {
+  const config = JSON.parse(
+    await fs.readFile(process.cwd() + "/src/config/config.json", "utf-8")
+  );
+
+  return NextResponse.json({
+    status: 200,
+    message: "Config",
+    data: config,
+  });
+}
