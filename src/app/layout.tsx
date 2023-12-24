@@ -24,7 +24,13 @@ export default async function RootLayout({
     }
   ).then((res) => res.json());
 
-  const config = configResp.data.config;
+  const config = configResp.data.config
+    ? configResp.data.config
+    : {
+        primary: "white",
+        title: "Niceboard",
+        description: "A nice dashboard",
+      };
   console.log({ config1: config });
 
   return (
