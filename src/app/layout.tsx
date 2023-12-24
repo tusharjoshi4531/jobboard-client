@@ -16,9 +16,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const config = JSON.parse(
-    await fs.readFile(process.cwd() + "/src/config/config.json", "utf-8")
-  );
+  const configResp = await fetch(
+    new URL("/api/config", process.env.NEXT_PUBLIC_URL_ORIGIN),
+    {
+      method: "GET",
+      cache: "no-cache",
+    }
+  ).then((res) => res.json());
+
+  const config = configResp.data.config;
+  console.log({ config1: config });
 
   return (
     <html lang="en">

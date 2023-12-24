@@ -1,14 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
+
+import createSupabaseServerClient from "@/supabase/server";
+
+export const fetchCache = "force-no-store";
+export const revalidate = 0; // seconds
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   const newConfig = await req.json();
   console.log(newConfig);
 
   try {
-    const filePath = path.join(process.cwd(), "/src/config/config.json");
-    await fs.writeFile(filePath, JSON.stringify(newConfig));
+    const supabase = await createSupabaseServerClient();
+    const resp = await supabase
+      .from("config")
+      .update({ config: newConfig })
+      .eq("link", process.env.NEXT_PUBLIC_URL_ORIGIN);
+
+    console.log(resp);
 
     return NextResponse.json({
       status: 200,
@@ -23,12 +32,24 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const filePath = path.join(process.cwd(), "/src/config/config.json");
-  const config = JSON.parse(await fs.readFile(filePath, "utf-8"));
+  // const filePath = path.join(process.cwd(), "/src/config/config.json");
+  const supabase = await createSupabaseServerClient({
+    auth: {
+      persistSession: false,
+    },
+  });
+
+  const resp = await supabase
+    .from("config")
+    .select("config")
+    .eq("link", process.env.NEXT_PUBLIC_URL_ORIGIN)
+    .single();
+  console.log(resp);
+  console.log(resp.data);
 
   return NextResponse.json({
     status: 200,
     message: "Config",
-    data: config,
+    data: resp.data,
   });
 }
